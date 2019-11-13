@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bloom_life/new_tree.dart';
+import 'package:bloom_life/request.dart';
+import 'package:http/http.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,6 +30,8 @@ class CreateToDoState extends State<CreateToDo> {
   void initState() {
     super.initState();
   }
+
+  String serverResponse = 'Server response';
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +115,10 @@ class CreateToDoState extends State<CreateToDo> {
                 color: Colors.white,
               ),
               onPressed: (){
-                print('camera');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RequestTest()),
+                );
               },
             ),
           ),
@@ -169,5 +177,19 @@ class CreateToDoState extends State<CreateToDo> {
             )),
       ),
     );
+  }
+
+  _makeGetRequest() async {
+    Response response = await get(_localhost());
+    setState(() {
+      serverResponse = response.body;
+    });
+  }
+
+  String _localhost() {
+    if (Platform.isAndroid)
+      return 'http://10.0.2.2:3000';
+    else // for iOS simulator
+      return 'http://localhost:3000';
   }
 }
