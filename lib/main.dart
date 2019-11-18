@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,7 +35,12 @@ class CreateToDoState extends State<CreateToDo> {
 
   String serverResponse = 'Server response';
 
+  String luminosity = '';
+  String umidity = '';
+  String temperature = '';
+
   Widget build(BuildContext context) {
+    _getNow();
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -41,13 +48,13 @@ class CreateToDoState extends State<CreateToDo> {
           Container(
             height: 120,
             width: 120,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: new AssetImage('image/planta.png'),
-                  fit: BoxFit.fill
-              ),
-              shape: BoxShape.rectangle,
-            ),
+//            decoration: BoxDecoration(
+//              image: DecorationImage(
+//                  image: new AssetImage('image/planta.png'),
+//                  fit: BoxFit.fill
+//              ),
+//              shape: BoxShape.rectangle,
+//            ),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -56,7 +63,7 @@ class CreateToDoState extends State<CreateToDo> {
               Padding(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0),
                 child: Text(
-                  'Luminosidade: 10',
+                  'Luminosidade: ' + luminosity,
                   style: TextStyle(
                       color: Colors.black45,
                       fontWeight: FontWeight.bold,
@@ -66,7 +73,7 @@ class CreateToDoState extends State<CreateToDo> {
               Padding(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 10, bottom: 10),
                 child: Text(
-                  'Umidade: 20',
+                  'Umidade: ' + umidity,
                   style: TextStyle(
                       color: Colors.black45,
                       fontWeight: FontWeight.bold,
@@ -76,7 +83,7 @@ class CreateToDoState extends State<CreateToDo> {
               Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: Text(
-                    'Temperatura: 36º C',
+                    'Temperatura: ' + temperature + 'º C',
                     style: TextStyle(
                         color: Colors.black45,
                         fontWeight: FontWeight.bold,
@@ -179,17 +186,21 @@ class CreateToDoState extends State<CreateToDo> {
     );
   }
 
-  _makeGetRequest() async {
-    Response response = await get(_localhost());
+  _getNow() async {
+    Response response = await get(_localhost() + 'getAtual');
     setState(() {
-      serverResponse = response.body;
+      var resp = json.decode(response.body);
+      print(resp);
+      luminosity = resp['luminosidade'].toString();
+      umidity = resp['umidade'].toString();
+      temperature = resp['temperatura'].toString();
     });
   }
 
   String _localhost() {
     if (Platform.isAndroid)
-      return 'http://10.0.2.2:3000';
+      return 'http://10.0.2.2:3000/';
     else // for iOS simulator
-      return 'http://localhost:3000';
+      return 'http://localhost:3000/';
   }
 }
