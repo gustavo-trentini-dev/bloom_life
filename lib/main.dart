@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,6 +31,11 @@ class CreateToDo extends StatefulWidget {
 
 class CreateToDoState extends State<CreateToDo> {
   void initState() {
+    _getNow();
+    var cron = new Cron();
+    cron.schedule(new Schedule.parse('*/1 * * * *'), () async {
+      _getNow();
+    });
     super.initState();
   }
 
@@ -41,7 +46,6 @@ class CreateToDoState extends State<CreateToDo> {
   String temperature = '';
 
   Widget build(BuildContext context) {
-    _getNow();
     return Scaffold(
       body: Column(
         children: <Widget>[
