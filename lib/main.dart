@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bloom_life/new_tree.dart';
+import 'package:bloom_life/list_tree.dart';
 import 'package:bloom_life/request.dart';
 import 'package:http/http.dart';
 
@@ -48,13 +49,6 @@ class CreateToDoState extends State<CreateToDo> {
           Container(
             height: 120,
             width: 120,
-//            decoration: BoxDecoration(
-//              image: DecorationImage(
-//                  image: new AssetImage('image/planta.png'),
-//                  fit: BoxFit.fill
-//              ),
-//              shape: BoxShape.rectangle,
-//            ),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -108,6 +102,23 @@ class CreateToDoState extends State<CreateToDo> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => NewTree()),
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: FloatingActionButton(
+              heroTag: 'listTrees',
+              backgroundColor: Color(0xFF228B22),
+              child: Icon(
+                FontAwesomeIcons.list,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ListTree()),
                 );
               },
             ),
