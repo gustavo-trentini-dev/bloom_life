@@ -111,7 +111,7 @@ class CreateToDoState extends State<CreateToDo> {
             ),
           ),
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment(0.1, 1),
             child: FloatingActionButton(
               heroTag: 'listTrees',
               backgroundColor: Color(0xFF228B22),

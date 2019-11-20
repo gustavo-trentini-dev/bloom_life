@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bloom_life/main.dart';
 import 'package:bloom_life/especie.dart';
+import 'package:toast/toast.dart';
 
 class NewTree extends StatefulWidget {
   NewTree();
@@ -45,21 +46,15 @@ class _NewTreeState extends State<NewTree> {
         children: <Widget>[
           _myAppBar(),
           Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            height: MediaQuery
-                .of(context)
-                .size
-                .height - 80,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - 80,
             child: ListView(
               children: <Widget>[
                 Center(
                   child: Text(
                     'Árvore',
                     style:
-                    TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Padding(
@@ -67,7 +62,7 @@ class _NewTreeState extends State<NewTree> {
                   child: new DropdownButton<String>(
                     hint: new Text("Selecione a espécie"),
                     value: treeSpecie,
-                      isDense: true,
+                    isDense: true,
                     onChanged: (String newValue) {
                       setState(() {
                         treeSpecie = newValue.toString();
@@ -127,12 +122,8 @@ class _NewTreeState extends State<NewTree> {
                           "Submit",
                           style: TextStyle(color: Colors.white),
                         )),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(serverResponse),
-                    ),
                   ],
-                )
+                ),
               ],
             ),
           )
@@ -144,10 +135,7 @@ class _NewTreeState extends State<NewTree> {
   Widget _myAppBar() {
     return Container(
       height: 80.0,
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         gradient: LinearGradient(
             colors: [
@@ -163,49 +151,54 @@ class _NewTreeState extends State<NewTree> {
         padding: const EdgeInsets.only(top: 16.0),
         child: Center(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.arrowLeft,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Container(
-                    child: Text(
-                      'Cadastrar Árvore',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.arrowLeft,
+                      color: Colors.white,
                     ),
-                  ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Container(
+                child: Text(
+                  'Cadastrar Árvore',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0),
                 ),
-              ],
-            )),
+              ),
+            ),
+          ],
+        )),
       ),
     );
   }
 
   _saveTree() async {
     Map<String, String> headers = {"Content-type": "application/json"};
-    String params = '{"nome": "' + this.treeName +
-    '", "especie": "' + this.treeSpecie +
-    '", "nascimento": "' + this.treeBirth + '"}';
+    String params = '{"nome": "' +
+        this.treeName +
+        '", "especie": "' +
+        this.treeSpecie +
+        '", "nascimento": "' +
+        this.treeBirth +
+        '"}';
     Response response =
-    await post(_localhost() + 'saveTree', headers: headers, body: params);
+        await post(_localhost() + 'saveTree', headers: headers, body: params);
     setState(() {
-      print('POST -> ' + response.body);
-      serverResponse = response.body;
+      print(response.body);
+      Toast.show(response.body, context, duration: Toast.LENGTH_LONG);
+      Navigator.of(context).pop();
     });
   }
 

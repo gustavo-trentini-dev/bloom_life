@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:toast/toast.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bloom_life/trees.dart';
-import 'package:bloom_life/especie.dart';
 
 class ListTree extends StatefulWidget {
   ListTree();
@@ -20,7 +21,7 @@ class _ListTreeState extends State<ListTree> {
     super.initState();
   }
 
-  List<Trees> trees = [];
+  List trees = [];
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +48,24 @@ class _ListTreeState extends State<ListTree> {
                     TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(
-                  height: 10.0,
+                Center(
+                  child: new ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: trees == null ? 0 : trees.length,
+                    itemBuilder: (BuildContext context, int index){
+                      var parsedDate = DateTime.parse(trees[index]['nascimento']);
+                      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+                      return GestureDetector(
+                        child: new ListTile(
+                      title: new Text(trees[index]['id'] + ' - ' + trees[index]["nome"]),
+                      subtitle: new Text(trees[index]['especie'] + ' - ' + formattedDate ),
+                      ),
+                        onTap: () =>
+                        _doSomething(trees[index]["id"])
+                      );
+                    },
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -131,9 +148,19 @@ class _ListTreeState extends State<ListTree> {
   _getTrees() async {
     Response response = await get(_localhost() + 'getTrees');
     setState(() {
-      final json = JsonDecoder().convert(response.body);
-      trees = (json).map<Especie>((item) => Especie.fromJson(item)).toList();
+      print(response.body);
+      trees = JsonDecoder().convert(response.body);
       print(trees);
+    });
+  }
+
+  _doSomething(planta_id) async{
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String params = '{"id": "' + planta_id + '"}';
+    Response response = await post(_localhost() + 'updateAtual', headers: headers, body: params);
+    setState(() {
+      print(response.body);
+      Toast.show(response.body, context, duration: Toast.LENGTH_LONG);
     });
   }
 
