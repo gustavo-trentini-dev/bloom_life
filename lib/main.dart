@@ -49,9 +49,9 @@ class CreateToDoState extends State<CreateToDo> {
 
   int planta_id = 0;
   String nome = '';
-  String luminosity = '';
-  String umidity = '';
-  String temperature = '';
+  var luminosity;
+  var umidity;
+  var temperature;
   String time = 'd';
 
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class CreateToDoState extends State<CreateToDo> {
               Padding(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0),
                 child: Text(
-                  'Luminosidade: ' + luminosity,
+                  'Luminosidade: ' + (luminosity['valor'] ? luminosity['valor'] : ''),
                   style: TextStyle(
                       color: Colors.black45,
                       fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class CreateToDoState extends State<CreateToDo> {
                 padding: EdgeInsets.only(
                     left: 16.0, right: 16.0, top: 10, bottom: 10),
                 child: Text(
-                  'Umidade: ' + umidity,
+                  'Umidade: ' + (umidity['valor'] ? umidity['valor'] : ''),
                   style: TextStyle(
                       color: Colors.black45,
                       fontWeight: FontWeight.bold,
@@ -101,7 +101,7 @@ class CreateToDoState extends State<CreateToDo> {
               Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: Text(
-                    'Temperatura: ' + temperature + 'º C',
+                    'Temperatura: ' + (temperature['valor'] ? temperature['valor'] : '') + 'º C',
                     style: TextStyle(
                         color: Colors.black45,
                         fontWeight: FontWeight.bold,
@@ -255,7 +255,11 @@ class CreateToDoState extends State<CreateToDo> {
     Response response = await post(_localhost() + 'getHistoric',
         headers: headers, body: params);
     setState(() {
-      print(response.body);
+      var retorno = json.decode(response.body);
+
+      umidity =  retorno['umidade'];
+      luminosity =  retorno['luminosidade'];
+      temperature =  retorno['temperatura'];
     });
   }
 
