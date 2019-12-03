@@ -7,32 +7,38 @@ import 'package:bloom_life/main.dart';
 import 'package:bloom_life/especie.dart';
 import 'package:toast/toast.dart';
 
-class NewTree extends StatefulWidget {
-  NewTree();
+class NewSpecie extends StatefulWidget {
+  NewSpecie();
 
   @override
-  _NewTreeState createState() => _NewTreeState();
+  _NewSpecieState createState() => _NewSpecieState();
 }
 
-class _NewTreeState extends State<NewTree> {
-  String treeName, treeSpecie, treeBirth;
-  List<Especie> species = [];
+class _NewSpecieState extends State<NewSpecie> {
+  String specieName, umidade, luminosidade, temp_min, temp_max;
 
-  getTreeName(treeName) {
-    this.treeName = treeName;
+  getSpecieName(specieName) {
+    this.specieName = specieName;
   }
 
-  getTreeSpecie(treeSpecie) {
-    this.treeSpecie = treeSpecie;
+  getUmidade(umidade) {
+    this.umidade = umidade;
   }
 
-  getTreeBirth(treeBirth) {
-    this.treeBirth = treeBirth;
+  getLuminosidade(luminosidade) {
+    this.luminosidade = luminosidade;
+  }
+
+  getTempMin(temperatura) {
+    this.temp_min = temperatura;
+  }
+
+  getTempMax(temperatura) {
+    this.temp_max = temperatura;
   }
 
   @override
   void initState() {
-    _getSpecies();
     super.initState();
   }
 
@@ -52,48 +58,53 @@ class _NewTreeState extends State<NewTree> {
               children: <Widget>[
                 Center(
                   child: Text(
-                    'Árvore',
+                    'Espécie',
                     style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: new DropdownButton<String>(
-                    hint: new Text("Selecione a espécie"),
-                    value: treeSpecie,
-                    isDense: true,
-                    onChanged: (String newValue) {
-                      setState(() {
-                        treeSpecie = newValue.toString();
-                      });
-
-                      print(treeSpecie);
-                    },
-                    items: species.map((Especie map) {
-                      return new DropdownMenuItem<String>(
-                        value: map.id.toString(),
-                        child: new Text(map.nome,
-                            style: new TextStyle(color: Colors.black)),
-                      );
-                    }).toList(),
+                    TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: TextField(
                     onChanged: (String treeName) {
-                      getTreeName(treeName);
+                      getSpecieName(specieName);
                     },
-                    decoration: InputDecoration(labelText: "Nome: "),
+                    decoration: InputDecoration(labelText: "Espécie: "),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: TextField(
-                    decoration: InputDecoration(labelText: "Nascimento: "),
+                    onChanged: (String treeName) {
+                      getUmidade(umidade);
+                    },
+                    decoration: InputDecoration(labelText: "Umidade: "),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: TextField(
+                    decoration: InputDecoration(labelText: "Luminosidade: "),
                     onChanged: (String treeBirth) {
-                      getTreeBirth(treeBirth);
+                      getLuminosidade(luminosidade);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: TextField(
+                    decoration: InputDecoration(labelText: "Temp. Mínima: "),
+                    onChanged: (String treeBirth) {
+                      getTempMin(temp_min);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: TextField(
+                    decoration: InputDecoration(labelText: "Temp. Máxima: "),
+                    onChanged: (String treeBirth) {
+                      getTempMax(temp_max);
                     },
                   ),
                 ),
@@ -109,7 +120,7 @@ class _NewTreeState extends State<NewTree> {
                           Navigator.of(context).pop();
                         },
                         child: const Text(
-                          "Cancel",
+                          "Voltar",
                           style: TextStyle(color: Colors.white),
                         )),
                     // This button results in adding the contact to the database
@@ -119,7 +130,7 @@ class _NewTreeState extends State<NewTree> {
                           _saveTree();
                         },
                         child: const Text(
-                          "Submit",
+                          "Salvar",
                           style: TextStyle(color: Colors.white),
                         )),
                   ],
@@ -151,35 +162,35 @@ class _NewTreeState extends State<NewTree> {
         padding: const EdgeInsets.only(top: 16.0),
         child: Center(
             child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                child: IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.arrowLeft,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }),
-              ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Container(
-                child: Text(
-                  'Cadastrar Árvore',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0),
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.arrowLeft,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        }),
+                  ),
                 ),
-              ),
-            ),
-          ],
-        )),
+                Expanded(
+                  flex: 5,
+                  child: Container(
+                    child: Text(
+                      'Cadastrar Espécie',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0),
+                    ),
+                  ),
+                ),
+              ],
+            )),
       ),
     );
   }
@@ -187,14 +198,18 @@ class _NewTreeState extends State<NewTree> {
   _saveTree() async {
     Map<String, String> headers = {"Content-type": "application/json"};
     String params = '{"nome": "' +
-        this.treeName +
-        '", "especie": "' +
-        this.treeSpecie +
-        '", "nascimento": "' +
-        this.treeBirth +
+        this.specieName +
+        '", "umidade": "' +
+        this.umidade +
+        '", "luminosidade": "' +
+        this.luminosidade +
+        '", "temp_min": "' +
+        this.temp_min +
+        '", "temp_max": "' +
+        this.temp_max +
         '"}';
     Response response =
-        await post(_localhost() + 'saveTree', headers: headers, body: params);
+    await post(_localhost() + 'saveSpecie', headers: headers, body: params);
     setState(() {
       print(response.body);
       Toast.show(response.body, context, duration: Toast.LENGTH_LONG);
@@ -202,22 +217,12 @@ class _NewTreeState extends State<NewTree> {
     });
   }
 
-  _getSpecies() async {
-    print(_localhost());
-    Response response = await get(_localhost() + 'getSpecies');
-    setState(() {
-      final json = JsonDecoder().convert(response.body);
-      species = (json).map<Especie>((item) => Especie.fromJson(item)).toList();
-      print(species);
-    });
-  }
-
   String _localhost() {
     if (Platform.isAndroid)
 //      return 'http://177.44.248.24:3000/';
-      return 'http://10.0.2.2:3000/';
+    return 'http://10.0.2.2:3000/';
     else // for iOS simulator
 //      return 'http://177.44.248.24:3000/';
-      return 'http://localhost:3000/';
+    return 'http://localhost:3000/';
   }
 }

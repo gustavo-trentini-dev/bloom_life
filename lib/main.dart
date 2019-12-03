@@ -41,9 +41,18 @@ class CreateToDoState extends State<CreateToDo> {
 
   String serverResponse = 'Server response';
 
+  final items = {
+    'd': 'Dia',
+    's': 'Semana',
+    'm': 'Mês',
+  };
+
+  int planta_id = 0;
+  String nome = '';
   String luminosity = '';
   String umidity = '';
   String temperature = '';
+  String time = 'd';
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +70,16 @@ class CreateToDoState extends State<CreateToDo> {
               Padding(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0),
                 child: Text(
+                  nome,
+                  style: TextStyle(
+                      color: Colors.black45,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24.0),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                child: Text(
                   'Luminosidade: ' + luminosity,
                   style: TextStyle(
                       color: Colors.black45,
@@ -69,7 +88,8 @@ class CreateToDoState extends State<CreateToDo> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 10, bottom: 10),
+                padding: EdgeInsets.only(
+                    left: 16.0, right: 16.0, top: 10, bottom: 10),
                 child: Text(
                   'Umidade: ' + umidity,
                   style: TextStyle(
@@ -87,6 +107,22 @@ class CreateToDoState extends State<CreateToDo> {
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0),
                   )),
+              Padding(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                child: DropdownButton(
+                  items: items.entries
+                      .map<DropdownMenuItem<String>>(
+                          (MapEntry<String, String> e) =>
+                              DropdownMenuItem<String>(
+                                value: e.key,
+                                child: Text(e.value),
+                              ))
+                      .toList(),
+                  onChanged: (String newKey) {
+                    print(newKey);
+                  },
+                ),
+              ),
             ]),
           ),
         ],
@@ -136,7 +172,7 @@ class CreateToDoState extends State<CreateToDo> {
                 FontAwesomeIcons.camera,
                 color: Colors.white,
               ),
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => RequestTest()),
@@ -168,35 +204,35 @@ class CreateToDoState extends State<CreateToDo> {
         padding: const EdgeInsets.only(top: 16.0),
         child: Center(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.arrowLeft,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          //
-                        }),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Container(
-                    child: Text(
-                      'Bloom Life',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.arrowLeft,
+                      color: Colors.white,
                     ),
-                  ),
+                    onPressed: () {
+                      //
+                    }),
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Container(
+                child: Text(
+                  'Bloom Life',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0),
                 ),
-              ],
-            )),
+              ),
+            ),
+          ],
+        )),
       ),
     );
   }
@@ -206,16 +242,29 @@ class CreateToDoState extends State<CreateToDo> {
     setState(() {
       var resp = json.decode(response.body);
       print(resp);
-      luminosity = resp['luminosidade'].toString();
-      umidity = resp['umidade'].toString();
-      temperature = resp['temperatura'].toString();
+      planta_id = resp['id'];
+      nome = resp['nome'].toString();
+
+      _getHistoric();
+    });
+  }
+
+  _getHistoric() async {
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String params = '{"time": "' + this.time + '", "planta_id": "' + this.planta_id.toString() + '"}';
+    Response response = await post(_localhost() + 'getHistoric',
+        headers: headers, body: params);
+    setState(() {
+      print(response.body);
     });
   }
 
   String _localhost() {
     if (Platform.isAndroid)
+//      return 'http://177.44.248.24:3000/';
       return 'http://10.0.2.2:3000/';
     else // for iOS simulator
+//      return 'http://177.44.248.24:3000/';
       return 'http://localhost:3000/';
   }
 }
