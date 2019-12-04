@@ -58,8 +58,9 @@ class _NewTreeState extends State<NewTree> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: EdgeInsets.only(left: 16.0, top: 2.0, right: 16.0, bottom: 2.0),
                   child: new DropdownButton<String>(
+                    isExpanded: true,
                     hint: new Text("Selecione a espécie"),
                     value: treeSpecie,
                     isDense: true,

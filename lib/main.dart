@@ -7,6 +7,7 @@ import 'package:bloom_life/new_tree.dart';
 import 'package:bloom_life/list_tree.dart';
 import 'package:bloom_life/request.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,9 +50,9 @@ class CreateToDoState extends State<CreateToDo> {
 
   int planta_id = 0;
   String nome = '';
-  var luminosity;
-  var umidity;
-  var temperature;
+  var luminosity = null;
+  var umidity = null;
+  var temperature = null;
   String time = 'd';
 
   Widget build(BuildContext context) {
@@ -78,38 +79,73 @@ class CreateToDoState extends State<CreateToDo> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                child: Text(
-                  'Luminosidade: ' + (luminosity['valor'] ? luminosity['valor'] : ''),
-                  style: TextStyle(
-                      color: Colors.black45,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, top: 10, bottom: 10),
-                child: Text(
-                  'Umidade: ' + (umidity['valor'] ? umidity['valor'] : ''),
-                  style: TextStyle(
-                      color: Colors.black45,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0),
-                ),
-              ),
-              Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: Text(
-                    'Temperatura: ' + (temperature['valor'] ? temperature['valor'] : '') + 'º C',
-                    style: TextStyle(
-                        color: Colors.black45,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text(
+                        'Temperatura: ' +
+                            (luminosity != null
+                                ? luminosity['valor'].toString()
+                                : ''),
+                        style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0),
+                      ),
+                      Icon(
+                        _setStatus(luminosity != null ? luminosity['status'] : ''),
+                        color: _setColor(luminosity != null ? luminosity['status'] : ''),
+                      ),
+                    ],
                   )),
               Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text(
+                        'Umidade: ' +
+                            (umidity != null
+                                ? umidity['valor'].toString()
+                                : ''),
+                        style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0),
+                      ),
+                      Icon(
+                        _setStatus(umidity != null ? umidity['status'] : ''),
+                        color: _setColor(umidity != null ? umidity['status'] : ''),
+                      ),
+                    ],
+                  )),
+              Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text(
+                        'Temperatura: ' +
+                            (temperature != null
+                                ? temperature['valor'].toString()
+                                : '') +
+                            'ºC',
+                        style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0),
+                      ),
+                      Icon(
+                        _setStatus(temperature != null ? temperature['status'] : ''),
+                        color: _setColor(temperature != null ? temperature['status'] : ''),
+                      ),
+                    ],
+                  )),
+              Padding(
+                padding: EdgeInsets.only(left: 16.0, top: 2.0, right: 16.0),
                 child: DropdownButton(
+                  isExpanded: true,
                   items: items.entries
                       .map<DropdownMenuItem<String>>(
                           (MapEntry<String, String> e) =>
@@ -118,8 +154,10 @@ class CreateToDoState extends State<CreateToDo> {
                                 child: Text(e.value),
                               ))
                       .toList(),
+                  hint: new Text('Selecione o período'),
                   onChanged: (String newKey) {
-                    print(newKey);
+                    this.time = newKey;
+                    _getHistoric();
                   },
                 ),
               ),
@@ -169,7 +207,7 @@ class CreateToDoState extends State<CreateToDo> {
               heroTag: 'camera',
               backgroundColor: Color(0xFF228B22),
               child: Icon(
-                FontAwesomeIcons.camera,
+                FontAwesomeIcons.diceThree,
                 color: Colors.white,
               ),
               onPressed: () {
@@ -250,17 +288,42 @@ class CreateToDoState extends State<CreateToDo> {
   }
 
   _getHistoric() async {
+    print(this.time);
     Map<String, String> headers = {"Content-type": "application/json"};
-    String params = '{"time": "' + this.time + '", "planta_id": "' + this.planta_id.toString() + '"}';
+    String params = '{"time": "' +
+        this.time +
+        '", "planta_id": "' +
+        this.planta_id.toString() +
+        '"}';
     Response response = await post(_localhost() + 'getHistoric',
         headers: headers, body: params);
     setState(() {
       var retorno = json.decode(response.body);
 
-      umidity =  retorno['umidade'];
-      luminosity =  retorno['luminosidade'];
-      temperature =  retorno['temperatura'];
+      print(retorno);
+
+      umidity = retorno['umidade'];
+      luminosity = retorno['luminosidade'];
+      temperature = retorno['temperatura'];
     });
+  }
+
+  _setStatus(status) {
+    if (status == 'up') {
+      return FontAwesomeIcons.arrowUp;
+    } else if (status == 'down') {
+      return FontAwesomeIcons.arrowDown;
+    } else {
+      return FontAwesomeIcons.check;
+    }
+  }
+
+  _setColor(status) {
+    if (status == 'up' || status == 'down') {
+      return Colors.redAccent;
+    } else {
+      return Colors.greenAccent;
+    }
   }
 
   String _localhost() {
