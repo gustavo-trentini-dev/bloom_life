@@ -1,13 +1,15 @@
 import 'dart:convert';
+import 'package:bloom_life/graph.dart';
+import 'package:bloom_life/new_specie.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bloom_life/new_tree.dart';
 import 'package:bloom_life/list_tree.dart';
-import 'package:bloom_life/request.dart';
+import 'package:bloom_life/graph.dart';
+import 'package:bloom_life/new_specie.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 
 void main() => runApp(MyApp());
 
@@ -69,7 +71,8 @@ class CreateToDoState extends State<CreateToDo> {
             height: MediaQuery.of(context).size.height - 200,
             child: ListView(children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                padding: EdgeInsets.only(
+                    left: 16.0, top: 10.0, right: 16.0, bottom: 10.0),
                 child: Text(
                   nome,
                   style: TextStyle(
@@ -79,55 +82,74 @@ class CreateToDoState extends State<CreateToDo> {
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: EdgeInsets.only(
+                      left: 16.0, top: 10.0, right: 16.0, bottom: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
+                      Icon(
+                        FontAwesomeIcons.lightbulb,
+                        color: Colors.black45,
+                      ),
                       Text(
-                        'Temperatura: ' +
-                            (luminosity != null
-                                ? luminosity['valor'].toString()
-                                : ''),
+                        luminosity != null
+                            ? luminosity['valor'].toString()
+                            : '',
                         style: TextStyle(
                             color: Colors.black45,
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
                       ),
-                      Icon(
-                        _setStatus(luminosity != null ? luminosity['status'] : ''),
-                        color: _setColor(luminosity != null ? luminosity['status'] : ''),
-                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 15.0),
+                        child: Icon(
+                          _setStatus(
+                              luminosity != null ? luminosity['status'] : ''),
+                          color: _setColor(
+                              luminosity != null ? luminosity['status'] : ''),
+                        ),
+                      )
                     ],
                   )),
               Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: EdgeInsets.only(
+                      left: 16.0, top: 10.0, right: 16.0, bottom: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
+                      Icon(
+                        FontAwesomeIcons.water,
+                        color: Colors.black45,
+                      ),
                       Text(
-                        'Umidade: ' +
-                            (umidity != null
-                                ? umidity['valor'].toString()
-                                : ''),
+                        umidity != null ? umidity['valor'].toString() : '',
                         style: TextStyle(
                             color: Colors.black45,
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
                       ),
-                      Icon(
-                        _setStatus(umidity != null ? umidity['status'] : ''),
-                        color: _setColor(umidity != null ? umidity['status'] : ''),
-                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 15.0),
+                        child: Icon(
+                          _setStatus(umidity != null ? umidity['status'] : ''),
+                          color: _setColor(
+                              umidity != null ? umidity['status'] : ''),
+                        ),
+                      )
                     ],
                   )),
               Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: EdgeInsets.only(
+                      left: 16.0, top: 10.0, right: 16.0, bottom: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
+                      Icon(
+                        FontAwesomeIcons.thermometerHalf,
+                        color: Colors.black45,
+                      ),
                       Text(
-                        'Temperatura: ' +
-                            (temperature != null
+                        (temperature != null
                                 ? temperature['valor'].toString()
                                 : '') +
                             'ºC',
@@ -136,14 +158,19 @@ class CreateToDoState extends State<CreateToDo> {
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
                       ),
-                      Icon(
-                        _setStatus(temperature != null ? temperature['status'] : ''),
-                        color: _setColor(temperature != null ? temperature['status'] : ''),
-                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 15.0),
+                        child: Icon(
+                          _setStatus(
+                              temperature != null ? temperature['status'] : ''),
+                          color: _setColor(
+                              temperature != null ? temperature['status'] : ''),
+                        ),
+                      )
                     ],
                   )),
               Padding(
-                padding: EdgeInsets.only(left: 16.0, top: 2.0, right: 16.0),
+                padding: EdgeInsets.only(left: 16.0, top: 10.0, right: 16.0),
                 child: DropdownButton(
                   isExpanded: true,
                   items: items.entries
@@ -168,12 +195,12 @@ class CreateToDoState extends State<CreateToDo> {
       floatingActionButton: Stack(
         children: <Widget>[
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment(0.4, 1),
             child: FloatingActionButton(
               heroTag: 'newTree',
               backgroundColor: Color(0xFF228B22),
               child: Icon(
-                FontAwesomeIcons.plus,
+                FontAwesomeIcons.tree,
                 color: Colors.white,
               ),
               onPressed: () {
@@ -185,7 +212,7 @@ class CreateToDoState extends State<CreateToDo> {
             ),
           ),
           Align(
-            alignment: Alignment(0.1, 1),
+            alignment: Alignment(-0.2, 1),
             child: FloatingActionButton(
               heroTag: 'listTrees',
               backgroundColor: Color(0xFF228B22),
@@ -202,18 +229,35 @@ class CreateToDoState extends State<CreateToDo> {
             ),
           ),
           Align(
-            alignment: Alignment(-0.8, 1),
+            alignment: Alignment.bottomRight,
             child: FloatingActionButton(
-              heroTag: 'camera',
+              heroTag: 'newSpecie',
               backgroundColor: Color(0xFF228B22),
               child: Icon(
-                FontAwesomeIcons.diceThree,
+                FontAwesomeIcons.dna,
                 color: Colors.white,
               ),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RequestTest()),
+                  MaterialPageRoute(builder: (context) => NewSpecie()),
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment(-0.8, 1),
+            child: FloatingActionButton(
+              heroTag: 'graphs',
+              backgroundColor: Color(0xFF228B22),
+              child: Icon(
+                FontAwesomeIcons.chartBar,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Graph()),
                 );
               },
             ),
@@ -279,7 +323,6 @@ class CreateToDoState extends State<CreateToDo> {
     Response response = await get(_localhost() + 'getAtual');
     setState(() {
       var resp = json.decode(response.body);
-      print(resp);
       planta_id = resp['id'];
       nome = resp['nome'].toString();
 
@@ -288,7 +331,6 @@ class CreateToDoState extends State<CreateToDo> {
   }
 
   _getHistoric() async {
-    print(this.time);
     Map<String, String> headers = {"Content-type": "application/json"};
     String params = '{"time": "' +
         this.time +
@@ -299,8 +341,6 @@ class CreateToDoState extends State<CreateToDo> {
         headers: headers, body: params);
     setState(() {
       var retorno = json.decode(response.body);
-
-      print(retorno);
 
       umidity = retorno['umidade'];
       luminosity = retorno['luminosidade'];
@@ -328,10 +368,10 @@ class CreateToDoState extends State<CreateToDo> {
 
   String _localhost() {
     if (Platform.isAndroid)
-//      return 'http://177.44.248.24:3000/';
-      return 'http://10.0.2.2:3000/';
+      return 'http://177.44.248.24:3000/';
+//      return 'http://10.0.2.2:3000/';
     else // for iOS simulator
-//      return 'http://177.44.248.24:3000/';
-      return 'http://localhost:3000/';
+      return 'http://177.44.248.24:3000/';
+//      return 'http://localhost:3000/';
   }
 }

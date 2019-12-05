@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bloom_life/main.dart';
-import 'package:bloom_life/especie.dart';
 import 'package:toast/toast.dart';
 
 class NewSpecie extends StatefulWidget {
@@ -16,26 +14,6 @@ class NewSpecie extends StatefulWidget {
 
 class _NewSpecieState extends State<NewSpecie> {
   String specieName, umidade, luminosidade, temp_min, temp_max;
-
-  getSpecieName(specieName) {
-    this.specieName = specieName;
-  }
-
-  getUmidade(umidade) {
-    this.umidade = umidade;
-  }
-
-  getLuminosidade(luminosidade) {
-    this.luminosidade = luminosidade;
-  }
-
-  getTempMin(temperatura) {
-    this.temp_min = temperatura;
-  }
-
-  getTempMax(temperatura) {
-    this.temp_max = temperatura;
-  }
 
   @override
   void initState() {
@@ -58,16 +36,16 @@ class _NewSpecieState extends State<NewSpecie> {
               children: <Widget>[
                 Center(
                   child: Text(
-                    'Espécie',
+                    'Nova Espécie\n Estado Ideal',
                     style:
-                    TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: EdgeInsets.only(left: 16.0, top: 10.0, right: 16.0),
                   child: TextField(
-                    onChanged: (String treeName) {
-                      getSpecieName(specieName);
+                    onChanged: (String newValue) {
+                      specieName = newValue.toString();
                     },
                     decoration: InputDecoration(labelText: "Espécie: "),
                   ),
@@ -75,8 +53,8 @@ class _NewSpecieState extends State<NewSpecie> {
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: TextField(
-                    onChanged: (String treeName) {
-                      getUmidade(umidade);
+                    onChanged: (String newValue) {
+                      umidade = newValue.toString();
                     },
                     decoration: InputDecoration(labelText: "Umidade: "),
                   ),
@@ -85,26 +63,26 @@ class _NewSpecieState extends State<NewSpecie> {
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: TextField(
                     decoration: InputDecoration(labelText: "Luminosidade: "),
-                    onChanged: (String treeBirth) {
-                      getLuminosidade(luminosidade);
+                    onChanged: (String newValue) {
+                      luminosidade = newValue.toString();
                     },
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: TextField(
-                    decoration: InputDecoration(labelText: "Temp. Mínima: "),
-                    onChanged: (String treeBirth) {
-                      getTempMin(temp_min);
+                    decoration: InputDecoration(labelText: "Temp. Mínima (ºC): "),
+                    onChanged: (String newValue) {
+                      temp_min = newValue.toString();
                     },
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10.0),
                   child: TextField(
-                    decoration: InputDecoration(labelText: "Temp. Máxima: "),
-                    onChanged: (String treeBirth) {
-                      getTempMax(temp_max);
+                    decoration: InputDecoration(labelText: "Temp. Máxima (ºC): "),
+                    onChanged: (String newValue) {
+                      temp_max = newValue.toString();
                     },
                   ),
                 ),
@@ -127,7 +105,7 @@ class _NewSpecieState extends State<NewSpecie> {
                     RaisedButton(
                         color: Colors.green,
                         onPressed: () {
-                          _saveTree();
+                          _saveSpecie();
                         },
                         child: const Text(
                           "Salvar",
@@ -162,40 +140,40 @@ class _NewSpecieState extends State<NewSpecie> {
         padding: const EdgeInsets.only(top: 16.0),
         child: Center(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.arrowLeft,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Container(
-                    child: Text(
-                      'Cadastrar Espécie',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.arrowLeft,
+                      color: Colors.white,
                     ),
-                  ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Container(
+                child: Text(
+                  'Cadastrar Espécie',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0),
                 ),
-              ],
-            )),
+              ),
+            ),
+          ],
+        )),
       ),
     );
   }
 
-  _saveTree() async {
+  _saveSpecie() async {
     Map<String, String> headers = {"Content-type": "application/json"};
     String params = '{"nome": "' +
         this.specieName +
@@ -209,7 +187,7 @@ class _NewSpecieState extends State<NewSpecie> {
         this.temp_max +
         '"}';
     Response response =
-    await post(_localhost() + 'saveSpecie', headers: headers, body: params);
+        await post(_localhost() + 'saveSpecie', headers: headers, body: params);
     setState(() {
       print(response.body);
       Toast.show(response.body, context, duration: Toast.LENGTH_LONG);
@@ -219,10 +197,10 @@ class _NewSpecieState extends State<NewSpecie> {
 
   String _localhost() {
     if (Platform.isAndroid)
-//      return 'http://177.44.248.24:3000/';
-    return 'http://10.0.2.2:3000/';
+      return 'http://177.44.248.24:3000/';
+//      return 'http://10.0.2.2:3000/';
     else // for iOS simulator
-//      return 'http://177.44.248.24:3000/';
-    return 'http://localhost:3000/';
+      return 'http://177.44.248.24:3000/';
+//      return 'http://localhost:3000/';
   }
 }

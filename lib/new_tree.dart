@@ -52,13 +52,13 @@ class _NewTreeState extends State<NewTree> {
               children: <Widget>[
                 Center(
                   child: Text(
-                    'Árvore',
+                    'Nova Planta',
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0, top: 2.0, right: 16.0, bottom: 2.0),
+                  padding: EdgeInsets.only(left: 16.0, top: 10.0, right: 16.0, bottom: 2.0),
                   child: new DropdownButton<String>(
                     isExpanded: true,
                     hint: new Text("Selecione a espécie"),
@@ -110,7 +110,7 @@ class _NewTreeState extends State<NewTree> {
                           Navigator.of(context).pop();
                         },
                         child: const Text(
-                          "Cancel",
+                          "Voltar",
                           style: TextStyle(color: Colors.white),
                         )),
                     // This button results in adding the contact to the database
@@ -120,7 +120,7 @@ class _NewTreeState extends State<NewTree> {
                           _saveTree();
                         },
                         child: const Text(
-                          "Submit",
+                          "Salvar",
                           style: TextStyle(color: Colors.white),
                         )),
                   ],
@@ -215,10 +215,10 @@ class _NewTreeState extends State<NewTree> {
 
   String _localhost() {
     if (Platform.isAndroid)
-//      return 'http://177.44.248.24:3000/';
-      return 'http://10.0.2.2:3000/';
+      return 'http://177.44.248.24:3000/';
+//      return 'http://10.0.2.2:3000/';
     else // for iOS simulator
-//      return 'http://177.44.248.24:3000/';
-      return 'http://localhost:3000/';
+      return 'http://177.44.248.24:3000/';
+//      return 'http://localhost:3000/';
   }
 }
