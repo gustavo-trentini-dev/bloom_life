@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:bloom_life/main.dart';
 import 'package:bloom_life/especie.dart';
 import 'package:toast/toast.dart';
+import 'package:intl/intl.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class NewTree extends StatefulWidget {
   NewTree();
@@ -17,18 +18,7 @@ class NewTree extends StatefulWidget {
 class _NewTreeState extends State<NewTree> {
   String treeName, treeSpecie, treeBirth;
   List<Especie> species = [];
-
-  getTreeName(treeName) {
-    this.treeName = treeName;
-  }
-
-  getTreeSpecie(treeSpecie) {
-    this.treeSpecie = treeSpecie;
-  }
-
-  getTreeBirth(treeBirth) {
-    this.treeBirth = treeBirth;
-  }
+  final format = DateFormat("dd/MM/yyyy");
 
   @override
   void initState() {
@@ -41,7 +31,7 @@ class _NewTreeState extends State<NewTree> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: <Widget>[
           _myAppBar(),
@@ -58,7 +48,8 @@ class _NewTreeState extends State<NewTree> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0, top: 10.0, right: 16.0, bottom: 2.0),
+                  padding: EdgeInsets.only(
+                      left: 16.0, top: 10.0, right: 16.0, bottom: 2.0),
                   child: new DropdownButton<String>(
                     isExpanded: true,
                     hint: new Text("Selecione a espécie"),
@@ -68,8 +59,6 @@ class _NewTreeState extends State<NewTree> {
                       setState(() {
                         treeSpecie = newValue.toString();
                       });
-
-                      print(treeSpecie);
                     },
                     items: species.map((Especie map) {
                       return new DropdownMenuItem<String>(
@@ -84,18 +73,29 @@ class _NewTreeState extends State<NewTree> {
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: TextField(
                     onChanged: (String treeName) {
-                      getTreeName(treeName);
+                      treeName = treeName;
                     },
                     decoration: InputDecoration(labelText: "Nome: "),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: TextField(
-                    decoration: InputDecoration(labelText: "Nascimento: "),
-                    onChanged: (String treeBirth) {
-                      getTreeBirth(treeBirth);
+                  child: DateTimeField(
+                    format: format,
+                    decoration:
+                        InputDecoration(labelText: 'Data de nascimento'),
+                    onShowPicker: (context, currentValue) {
+                      return showDatePicker(
+                        context: context,
+                        firstDate: DateTime(1900),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime(2100),
+                      );
                     },
+                    onChanged: (date) => setState(() {
+                      print(date.toString().substring(0, 10));
+                      treeBirth = date.toString().substring(0, 10);
+                    }),
                   ),
                 ),
                 SizedBox(
@@ -187,29 +187,23 @@ class _NewTreeState extends State<NewTree> {
 
   _saveTree() async {
     Map<String, String> headers = {"Content-type": "application/json"};
-    String params = '{"nome": "' +
-        this.treeName +
-        '", "especie": "' +
-        this.treeSpecie +
-        '", "nascimento": "' +
-        this.treeBirth +
-        '"}';
+    print(treeName);
+    print(treeSpecie);
+    print(treeBirth);
+    String params = '{"nome": "' + treeName + '", "especie": "' + treeSpecie + '", "nascimento": "' + treeBirth + '"}';
     Response response =
         await post(_localhost() + 'saveTree', headers: headers, body: params);
     setState(() {
-      print(response.body);
       Toast.show(response.body, context, duration: Toast.LENGTH_LONG);
       Navigator.of(context).pop();
     });
   }
 
   _getSpecies() async {
-    print(_localhost());
     Response response = await get(_localhost() + 'getSpecies');
     setState(() {
       final json = JsonDecoder().convert(response.body);
       species = (json).map<Especie>((item) => Especie.fromJson(item)).toList();
-      print(species);
     });
   }
 

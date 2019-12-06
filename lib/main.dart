@@ -7,8 +7,6 @@ import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bloom_life/new_tree.dart';
 import 'package:bloom_life/list_tree.dart';
-import 'package:bloom_life/graph.dart';
-import 'package:bloom_life/new_specie.dart';
 import 'package:http/http.dart';
 
 void main() => runApp(MyApp());
@@ -59,6 +57,7 @@ class CreateToDoState extends State<CreateToDo> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: <Widget>[
           myAppBar(context),
@@ -170,7 +169,7 @@ class CreateToDoState extends State<CreateToDo> {
                     ],
                   )),
               Padding(
-                padding: EdgeInsets.only(left: 16.0, top: 10.0, right: 16.0),
+                padding: EdgeInsets.only(left: 24.0, top: 10.0, right: 24.0),
                 child: DropdownButton(
                   isExpanded: true,
                   items: items.entries
@@ -182,6 +181,8 @@ class CreateToDoState extends State<CreateToDo> {
                               ))
                       .toList(),
                   hint: new Text('Selecione o período'),
+                  value: time,
+                  isDense: true,
                   onChanged: (String newKey) {
                     this.time = newKey;
                     _getHistoric();

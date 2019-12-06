@@ -26,7 +26,7 @@ class _ListTreeState extends State<ListTree> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: <Widget>[
           _myAppBar(),
@@ -62,7 +62,7 @@ class _ListTreeState extends State<ListTree> {
                       subtitle: new Text(trees[index]['especie'] + ' - ' + formattedDate ),
                       ),
                         onTap: () =>
-                        _doSomething(trees[index]["id"])
+                        _changePrincipal(trees[index]["id"])
                       );
                     },
                   ),
@@ -148,19 +148,17 @@ class _ListTreeState extends State<ListTree> {
   _getTrees() async {
     Response response = await get(_localhost() + 'getTrees');
     setState(() {
-      print(response.body);
       trees = JsonDecoder().convert(response.body);
-      print(trees);
     });
   }
 
-  _doSomething(planta_id) async{
+  _changePrincipal(planta_id) async{
     Map<String, String> headers = {"Content-type": "application/json"};
     String params = '{"id": "' + planta_id + '"}';
     Response response = await post(_localhost() + 'updateAtual', headers: headers, body: params);
     setState(() {
-      print(response.body);
       Toast.show(response.body, context, duration: Toast.LENGTH_LONG);
+      Navigator.pop(context);
     });
   }
 

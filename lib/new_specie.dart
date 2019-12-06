@@ -25,7 +25,7 @@ class _NewSpecieState extends State<NewSpecie> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: <Widget>[
           _myAppBar(),
@@ -189,7 +189,6 @@ class _NewSpecieState extends State<NewSpecie> {
     Response response =
         await post(_localhost() + 'saveSpecie', headers: headers, body: params);
     setState(() {
-      print(response.body);
       Toast.show(response.body, context, duration: Toast.LENGTH_LONG);
       Navigator.of(context).pop();
     });
