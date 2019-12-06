@@ -321,6 +321,7 @@ class CreateToDoState extends State<CreateToDo> {
   }
 
   _getNow() async {
+    print('now');
     Response response = await get(_localhost() + 'getAtual');
     setState(() {
       var resp = json.decode(response.body);
