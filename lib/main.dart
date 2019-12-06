@@ -369,10 +369,10 @@ class CreateToDoState extends State<CreateToDo> {
 
   String _localhost() {
     if (Platform.isAndroid)
-      return 'http://177.44.248.24:3000/';
-//      return 'http://10.0.2.2:3000/';
+//      return 'http://177.44.248.24:3000/';
+      return 'http://10.0.2.2:3000/';
     else // for iOS simulator
-      return 'http://177.44.248.24:3000/';
-//      return 'http://localhost:3000/';
+//      return 'http://177.44.248.24:3000/';
+      return 'http://localhost:3000/';
   }
 }
