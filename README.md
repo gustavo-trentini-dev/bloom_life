@@ -6,4 +6,6 @@ The project goal is to show in the screen the temperature, light and humidity le
 
 This data was collected with an ESP32 card and sent to a NodeJS server, responsible for saving the data in the database and communicating with the application.
 
+NodeJS Server: https://github.com/trentsgustavo/server_bloom
+
 This project was destined to the discipline of Project Integrator III, from Univates University
